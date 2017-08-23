@@ -14,3 +14,4 @@
  limitations under the License.
 */
 export const camelCasePattern = new RegExp(/([a-z])([A-Z])/g);
+export const kebabCasePattern = new RegExp(/^[\w-]+$/);
