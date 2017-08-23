@@ -17,3 +17,6 @@ export const camelCasePattern = new RegExp(/([a-z])([A-Z])/g);
 export const kebabCasePattern = new RegExp(/^[\w-]+$/);
 export const unlimitedPattern = new RegExp(/^[Uu]nlimited$/);
 export const numberPattern = new RegExp(/^\d+$/);
+export const ipV4Pattern =
+  new RegExp(/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/);
+export const ipV6Pattern = new RegExp(/^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$/);
