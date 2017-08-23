@@ -15,3 +15,5 @@
 */
 export const camelCasePattern = new RegExp(/([a-z])([A-Z])/g);
 export const kebabCasePattern = new RegExp(/^[\w-]+$/);
+export const unlimitedPattern = new RegExp(/^[Uu]nlimited$/);
+export const numberPattern = new RegExp(/^\d+$/);
