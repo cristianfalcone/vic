@@ -110,8 +110,9 @@ describe('ComputeCapacityComponent', () => {
   });
 
   it('should validate cpu limit field', () => {
+    const field = component.form.get('cpuLimit');
     let errors = {};
-    let field = component.form.get('cpuLimit');
+
     expect(field.valid).toBeTruthy();
 
     // CPU Limit field is required
@@ -120,26 +121,27 @@ describe('ComputeCapacityComponent', () => {
     expect(errors['required']).toBeTruthy();
 
     // Set CPU Limit to something incorrect
-    field.setValue("test");
+    field.setValue('test');
     errors = field.errors || {};
     expect(errors['required']).toBeFalsy();
     expect(errors['pattern']).toBeTruthy();
 
     // Set CPU Limit to something incorrect
-    field.setValue("0");
+    field.setValue('0');
     errors = field.errors || {};
     expect(errors['pattern']).toBeFalsy();
     expect(errors['min']).toBeTruthy();
 
     // Set CPU Limit to something correct
-    field.setValue("1");
+    field.setValue('1');
     errors = field.errors || {};
     expect(errors['min']).toBeFalsy();
   });
 
   it('should validate memory limit field', () => {
+    const field = component.form.get('memoryLimit');
     let errors = {};
-    let field = component.form.get('memoryLimit');
+
     expect(field.valid).toBeTruthy();
 
     // CPU Limit field is required
@@ -148,19 +150,19 @@ describe('ComputeCapacityComponent', () => {
     expect(errors['required']).toBeTruthy();
 
     // Set CPU Limit to something incorrect
-    field.setValue("test");
+    field.setValue('test');
     errors = field.errors || {};
     expect(errors['required']).toBeFalsy();
     expect(errors['pattern']).toBeTruthy();
 
     // Set CPU Limit to something incorrect
-    field.setValue("0");
+    field.setValue('0');
     errors = field.errors || {};
     expect(errors['pattern']).toBeFalsy();
     expect(errors['min']).toBeTruthy();
 
     // Set CPU Limit to something correct
-    field.setValue("1");
+    field.setValue('1');
     errors = field.errors || {};
     expect(errors['min']).toBeFalsy();
   });
