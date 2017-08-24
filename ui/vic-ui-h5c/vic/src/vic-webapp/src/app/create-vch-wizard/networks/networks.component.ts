@@ -18,9 +18,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import { CreateVchWizardService } from '../create-vch-wizard.service';
-import { kebabCasePattern, ipV4Pattern, ipV6Pattern} from '../../shared/utils/regex';
-
-const ipPattern = new RegExp(ipV4Pattern.source + '|' + ipV6Pattern.source);
+import { kebabCasePattern, ipPattern} from '../../shared/utils/regex';
 
 @Component({
     selector: 'vic-vch-creation-networks',
