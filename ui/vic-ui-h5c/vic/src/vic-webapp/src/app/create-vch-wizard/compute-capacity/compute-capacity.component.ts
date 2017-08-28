@@ -21,6 +21,7 @@ import { CreateVchWizardService } from '../create-vch-wizard.service';
 import { numberPattern, unlimitedPattern } from '../../shared/utils/regex';
 
 const unlimitedOrNumberPattern = new RegExp(unlimitedPattern.source + '|' + numberPattern.source);
+const endpointMemoryDefaultValue = 2048;
 
 function getNumericValidatorsArray(allowUnlimited: boolean) {
     return [
@@ -81,7 +82,7 @@ export class ComputeCapacityComponent implements OnInit {
                 getNumericValidatorsArray(false)
             ],
             endpointMemory: [
-                '2048',
+                endpointMemoryDefaultValue,
                 getNumericValidatorsArray(false)
             ]
         });
@@ -190,11 +191,10 @@ export class ComputeCapacityComponent implements OnInit {
                     this.form.get('cpuReservation').updateValueAndValidity();
                     this.form.get('memoryReservation').updateValueAndValidity();
 
-                    // this prevents the next button from getting disabled when the
-                    // user selects a host or cluster that has less than 2048MB of ram
-                    // available for VM endpoint. as a solution, we set the smaller
-                    // value between 2048 and memory['maxUsage']
-                    this.form.get('endpointMemory').setValue(Math.min(memory['maxUsage'], 2048) + '');
+                    // This prevents the next button from getting disabled when the user selects a host or cluster that has less RAM
+                    // available for VM endpoint than the default value. As a solution, we set the smaller value between the default value
+                    // and memory['maxUsage']
+                    this.form.get('endpointMemory').setValue(Math.min(memory['maxUsage'], endpointMemoryDefaultValue) + '');
                     this.form.get('endpointMemory').updateValueAndValidity();
                 });
         });
