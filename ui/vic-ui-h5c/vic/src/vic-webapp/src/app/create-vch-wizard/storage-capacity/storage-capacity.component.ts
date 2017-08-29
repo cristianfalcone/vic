@@ -23,7 +23,7 @@ import {
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import { CreateVchWizardService } from '../create-vch-wizard.service';
-import { kebabCasePattern, numberPattern } from '../../shared/utils/regex';
+import { supportedCharsPattern, numberPattern } from '../../shared/utils/regex';
 
 @Component({
     selector: 'vic-vch-creation-storage-capacity',
@@ -83,7 +83,7 @@ export class StorageCapacityComponent implements OnInit {
             volFileFolder: '',
             dockerVolName: [{ value: '', disabled: true }, [
               Validators.required,
-              Validators.pattern(kebabCasePattern)
+              Validators.pattern(supportedCharsPattern)
             ]]
         });
     }

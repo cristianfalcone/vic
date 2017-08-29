@@ -18,7 +18,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import { CreateVchWizardService } from '../create-vch-wizard.service';
-import { kebabCasePattern, ipPattern} from '../../shared/utils/regex';
+import { supportedCharsPattern, ipPattern} from '../../shared/utils/regex';
 
 @Component({
     selector: 'vic-vch-creation-networks',
@@ -102,7 +102,7 @@ export class NetworksComponent implements OnInit {
             ]],
             containerNetworkLabel: [{ value: '', disabled: true }, [
                 Validators.required,
-                Validators.pattern(kebabCasePattern)
+                Validators.pattern(supportedCharsPattern)
             ]]
         });
     }

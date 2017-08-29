@@ -18,7 +18,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import { CreateVchWizardService } from '../create-vch-wizard.service';
-import { kebabCasePattern } from '../../shared/utils/regex';
+import { supportedCharsPattern } from '../../shared/utils/regex';
 
 @Component({
     selector: 'vic-vch-creation-name',
@@ -42,7 +42,7 @@ export class VchCreationWizardNameComponent implements OnInit {
                 [
                     Validators.required,
                     Validators.maxLength(80),
-                    Validators.pattern(kebabCasePattern)
+                    Validators.pattern(supportedCharsPattern)
                 ]
             ]
         });
@@ -71,8 +71,7 @@ export class VchCreationWizardNameComponent implements OnInit {
                     this.form.get('name').setErrors({
                         resourcePoolExists: true
                     });
-                    this.formErrMessage = 'There is already a VirtualApp or ResourcePool that exists with the same name';
-                    return Observable.throw([this.formErrMessage]);
+                    return Observable.throw(null);
                 }
                 return Observable.of({ name: this.form.get('name').value });
             });
