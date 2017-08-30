@@ -24,7 +24,6 @@ import {TestScheduler} from 'rxjs/Rx';
 
 describe('ComputeCapacityComponent', () => {
 
-  let scheduler: TestScheduler;
   let component: ComputeCapacityComponent;
   let fixture: ComponentFixture<ComputeCapacityComponent>;
   let service: CreateVchWizardService;
@@ -72,13 +71,6 @@ describe('ComputeCapacityComponent', () => {
   });
 
   beforeEach(() => {
-    scheduler = new TestScheduler((a, b) => expect(a).toEqual(b));
-    const originalTimer = Observable.timer;
-
-    spyOn(Observable, 'timer').and.callFake(function(initialDelay, dueTime) {
-      return originalTimer.call(this, initialDelay, dueTime, scheduler);
-    });
-
     fixture = TestBed.createComponent(ComputeCapacityComponent);
     component = fixture.componentInstance;
     component.onPageLoad();
@@ -173,24 +165,11 @@ describe('ComputeCapacityComponent', () => {
     component.onCommit();
     expect(component.form.valid).toBe(true);
 
-    // To test code after the observable timer (250ms) in onPageLoad() method.
-    // We might not need this if we move error messages to template.
-
     component.form.get('cpuReservation').setValue('');
-    scheduler.schedule(() => {
-      expect(component.form.get('cpuReservation').hasError('required')).toBeTruthy();
-      expect(component.formErrMessage).toBe('CPU reservation cannot be empty!');
-    }, 250, null);
-
-    scheduler.flush();
+    expect(component.form.get('cpuReservation').hasError('required')).toBeTruthy();
 
     component.form.get('cpuReservation').setValue('test');
-    scheduler.schedule(() => {
-      expect(component.form.get('cpuReservation').hasError('pattern')).toBeTruthy();
-      expect(component.formErrMessage).toBe('CPU reservation should be numberic!');
-    }, 250, null);
-
-    scheduler.flush();
+    expect(component.form.get('cpuReservation').hasError('pattern')).toBeTruthy();
 
   });
 });

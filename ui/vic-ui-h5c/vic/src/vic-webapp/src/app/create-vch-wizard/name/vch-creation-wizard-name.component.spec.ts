@@ -89,7 +89,7 @@ describe('VchCreationWizardNameComponent', () => {
   });
 
   it('should have a invalid form after adding an invalid name pattern',  () => {
-    component.form.get('name').setValue('two words');
+    component.form.get('name').setValue('two@words');
     expect(component.form.invalid).toBe(true);
   });
 
