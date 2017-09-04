@@ -47,7 +47,9 @@ describe('ComputeCapacityComponent', () => {
               }]);
             },
             getClustersList() {
-              return Observable.of(null);
+              return Observable.of([{
+                text: 'cluster'
+              }]);
             },
             getResourceAllocationsInfo() {
               return Observable.of({
@@ -60,6 +62,13 @@ describe('ComputeCapacityComponent', () => {
                   unreservedForPool: MaxLimit
                 }
               });
+            },
+            getHostsAndResourcePools() {
+              return Observable.of([{
+                text: 'cluster',
+                nodeTypeId: 'DcCluster',
+                aliases: ['cluster']
+              }]);
             }
           }
         }
@@ -80,6 +89,7 @@ describe('ComputeCapacityComponent', () => {
     spyOn(service, 'getDatacenter').and.callThrough();
     spyOn(service, 'getClustersList').and.callThrough();
     spyOn(service, 'getResourceAllocationsInfo').and.callThrough();
+    spyOn(service, 'getHostsAndResourcePools').and.callThrough();
   });
 
   it('should be created', () => {
@@ -96,14 +106,15 @@ describe('ComputeCapacityComponent', () => {
   });
 
   it('should end with an valid form on step commit after selecting a compute resource', () => {
-    component.selectComputeResource({text: ''});
+    component.loadResources(component.clusters[0].text);
+    component.selectComputeResource(component.resources[0]);
     component.onCommit();
     expect(component.form.valid).toBe(true);
   });
 
   it('should validate cpu limit field', () => {
     const field = component.form.get('cpuLimit');
-    let errors = {};
+    let errors;
 
     expect(field.valid).toBeTruthy();
 
@@ -132,7 +143,7 @@ describe('ComputeCapacityComponent', () => {
 
   it('should validate memory limit field', () => {
     const field = component.form.get('memoryLimit');
-    let errors = {};
+    let errors;
 
     expect(field.valid).toBeTruthy();
 
