@@ -1,0 +1,104 @@
+/*
+ Copyright 2017 VMware, Inc. All Rights Reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+*/
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ClarityModule} from 'clarity-angular';
+import {HttpModule} from '@angular/http';
+import {CreateVchWizardService} from '../create-vch-wizard.service';
+import {Observable} from 'rxjs/Observable';
+import {StorageCapacityComponent} from './storage-capacity.component';
+
+describe('StorageCapacityComponent', () => {
+
+  let component: StorageCapacityComponent;
+  let fixture: ComponentFixture<StorageCapacityComponent>;
+  let service: CreateVchWizardService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+        HttpModule,
+        ClarityModule
+      ],
+      providers: [
+        {
+          provide: CreateVchWizardService,
+          useValue: {
+            getDatastores() {
+              return Observable.of([{
+                text: 'datastore'
+              }]);
+            }
+          }
+        }
+      ],
+      declarations: [
+        StorageCapacityComponent
+      ]
+    });
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(StorageCapacityComponent);
+    component = fixture.componentInstance;
+    component.onPageLoad();
+
+    service = fixture.debugElement.injector.get(CreateVchWizardService);
+    spyOn(service, 'getDatastores').and.callThrough();
+  });
+
+  it('should be created', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should start with an invalid form', () => {
+    expect(component.form.invalid).toBe(true);
+  });
+
+  it('should end with an invalid form on step commit without selecting image store',  () => {
+    component.onCommit();
+    expect(component.form.invalid).toBe(true);
+  });
+
+  it('should end with an valid form on step commit after selecting a image store', () => {
+    component.form.get('imageStore').setValue('datastore');
+    component.onCommit();
+    expect(component.form.valid).toBe(true);
+  });
+
+  it('should validate advanced fields defaults values', () => {
+    component.form.get('imageStore').setValue('datastore');
+    component.toggleAdvancedMode();
+    component.onCommit();
+    expect(component.form.valid).toBe(true);
+  });
+
+  it('should add and remove volume data store entries', () => {
+    component.addNewVolumeDatastoreEntry();
+    expect(component.form.get('volumeStores')['controls'].length).toBe(2);
+    component.removeVolumeDatastoreEntry(1);
+    expect(component.form.get('volumeStores')['controls'].length).toBe(1);
+  });
+
+  it('should have file folder field that begins with a slash', () => {
+    component.form.get('imageStore').setValue('datastore');
+    component.form.get('fileFolder').setValue('folder');
+    component.onCommit().subscribe( r => {
+      expect(r.storageCapacity.fileFolder).toBe('/folder');
+    });
+  });
+});
