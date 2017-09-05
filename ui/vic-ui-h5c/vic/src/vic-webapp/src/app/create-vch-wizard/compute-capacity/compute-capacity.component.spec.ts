@@ -30,6 +30,11 @@ describe('ComputeCapacityComponent', () => {
 
   const MaxLimit = 4096;
 
+  function setDefaultRequiredValues() {
+    component.loadResources(component.clusters[0].text);
+    component.selectComputeResource(component.resources[0]);
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -106,8 +111,7 @@ describe('ComputeCapacityComponent', () => {
   });
 
   it('should end with an valid form on step commit after selecting a compute resource', () => {
-    component.loadResources(component.clusters[0].text);
-    component.selectComputeResource(component.resources[0]);
+    setDefaultRequiredValues();
     component.onCommit();
     expect(component.form.valid).toBe(true);
   });
@@ -139,6 +143,12 @@ describe('ComputeCapacityComponent', () => {
     field.setValue('1');
     errors = field.errors || {};
     expect(errors['min']).toBeFalsy();
+
+    // Validate result
+    setDefaultRequiredValues();
+    component.onCommit().subscribe( r => {
+      expect(r.computeCapacity.cpu).toBe('1');
+    });
   });
 
   it('should validate memory limit field', () => {
@@ -168,6 +178,12 @@ describe('ComputeCapacityComponent', () => {
     field.setValue('1');
     errors = field.errors || {};
     expect(errors['min']).toBeFalsy();
+
+    // Validate result
+    setDefaultRequiredValues();
+    component.onCommit().subscribe( r => {
+      expect(r.computeCapacity.memory).toBe('1');
+    });
   });
 
   it('should validate advanced fields defaults values', () => {
@@ -181,6 +197,5 @@ describe('ComputeCapacityComponent', () => {
 
     component.form.get('cpuReservation').setValue('test');
     expect(component.form.get('cpuReservation').hasError('pattern')).toBeTruthy();
-
   });
 });

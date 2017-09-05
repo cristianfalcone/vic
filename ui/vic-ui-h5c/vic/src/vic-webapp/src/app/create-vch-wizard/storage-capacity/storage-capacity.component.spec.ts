@@ -83,8 +83,28 @@ describe('StorageCapacityComponent', () => {
   it('should validate advanced fields defaults values', () => {
     component.form.get('imageStore').setValue('datastore');
     component.toggleAdvancedMode();
+    expect(component.form.get('volumeStores').enabled).toBeTruthy();
     component.onCommit();
     expect(component.form.valid).toBe(true);
+    component.toggleAdvancedMode();
+    expect(component.form.get('volumeStores').disabled).toBeTruthy();
+  });
+
+  it('should validate volume store fields', () => {
+    component.toggleAdvancedMode();
+    const controls = component.form.get('volumeStores')['controls'][0]['controls'];
+
+    controls['volDatastore'].setValue('datastore');
+    expect(controls['dockerVolName'].enabled).toBeTruthy();
+    expect(controls['dockerVolName'].errors['required']).toBeTruthy();
+
+    // Set Docker Volume Name to something incorrect
+    controls['dockerVolName'].setValue('@name');
+    expect(controls['dockerVolName'].errors['pattern']).toBeTruthy();
+
+    // Set Docker Volume Name to something correct
+    controls['dockerVolName'].setValue('volume name');
+    expect(controls['dockerVolName'].valid).toBeTruthy();
   });
 
   it('should add and remove volume data store entries', () => {
@@ -94,11 +114,27 @@ describe('StorageCapacityComponent', () => {
     expect(component.form.get('volumeStores')['controls'].length).toBe(1);
   });
 
-  it('should have file folder field that begins with a slash', () => {
+  it('should have folder fields that begin with a slash', () => {
     component.form.get('imageStore').setValue('datastore');
     component.form.get('fileFolder').setValue('folder');
+    component.toggleAdvancedMode();
+    const controls = component.form.get('volumeStores')['controls'][0]['controls'];
+    controls['volDatastore'].setValue('datastore');
+    controls['volFileFolder'].setValue('folder');
+    controls['dockerVolName'].setValue('volume');
+
     component.onCommit().subscribe( r => {
       expect(r.storageCapacity.fileFolder).toBe('/folder');
+      expect(r.storageCapacity.volumeStores[0].volFileFolder).toBe('/folder');
+    });
+
+    // should not add an extra slash
+    component.form.get('fileFolder').setValue('/folder');
+    controls['volFileFolder'].setValue('/folder');
+
+    component.onCommit().subscribe( r => {
+      expect(r.storageCapacity.fileFolder).toBe('/folder');
+      expect(r.storageCapacity.volumeStores[0].volFileFolder).toBe('/folder');
     });
   });
 });

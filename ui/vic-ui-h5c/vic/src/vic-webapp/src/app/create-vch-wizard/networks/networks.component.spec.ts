@@ -142,6 +142,33 @@ describe('StorageCapacityComponent', () => {
     expect(component.form.valid).toBe(true);
   });
 
+  it('should validate container network fields', () => {
+    component.toggleAdvancedMode();
+
+    const controls = component.form.get('containerNetworks')['controls'][0]['controls'];
+
+    controls['containerNetwork'].setValue('portGroup');
+    expect(controls['containerNetworkLabel'].enabled).toBeTruthy();
+    expect(controls['containerNetworkLabel'].errors['required']).toBeTruthy();
+
+    // Should enable static IP address related fields
+    controls['containerNetworkType'].setValue('static');
+    expect(controls['containerNetworkIpRange'].enabled).toBeTruthy();
+    expect(controls['containerNetworkGateway'].enabled).toBeTruthy();
+    expect(controls['containerNetworkDns'].enabled).toBeTruthy();
+
+    // Should disable static IP address related fields when DHCP is selected
+    controls['containerNetworkType'].setValue('dhcp');
+    expect(controls['containerNetworkIpRange'].disabled).toBeTruthy();
+    expect(controls['containerNetworkGateway'].disabled).toBeTruthy();
+    expect(controls['containerNetworkDns'].disabled).toBeTruthy();
+
+    // Should disable after enable
+    controls['containerNetworkType'].setValue('static');
+    controls['containerNetwork'].setValue('');
+    expect(controls['containerNetworkLabel'].disabled).toBeTruthy();
+  });
+
   it('should add and remove container network entries', () => {
     component.addNewContainerNetworkEntry();
     expect(component.form.get('containerNetworks')['controls'].length).toBe(2);

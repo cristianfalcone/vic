@@ -81,5 +81,40 @@ describe('StorageCapacityComponent', () => {
     component.onCommit();
     expect(component.form.valid).toBe(true);
   });
-});
 
+  it('should validate advanced fields changes', () => {
+    component.toggleAdvancedMode();
+
+    component.form.get('useTls').setValue(false);
+    expect(component.form.get('tlsCertPath').disabled).toBeTruthy();
+    expect(component.form.get('certificateKeySize').disabled).toBeTruthy();
+
+    component.form.get('useTls').setValue(true);
+    expect(component.form.get('tlsCertPath').enabled).toBeTruthy();
+    expect(component.form.get('certificateKeySize').enabled).toBeTruthy();
+
+    component.form.get('useWhitelistRegistry').setValue(false);
+    expect(component.form.get('whitelistRegistries').disabled).toBeTruthy();
+
+    component.form.get('useWhitelistRegistry').setValue(true);
+    expect(component.form.get('whitelistRegistries').enabled).toBeTruthy();
+  });
+
+  it('should add and remove client certificate entries', () => {
+    component.addNewFormArrayEntry('tlsCas');
+    expect(component.form.get('tlsCas')['controls'].length).toBe(2);
+    component.removeFormArrayEntry('tlsCas', 1);
+    expect(component.form.get('tlsCas')['controls'].length).toBe(1);
+    component.removeFormArrayEntry('tlsCas', 0);
+    expect(component.form.get('tlsCas')['controls'].length).toBe(1);
+  });
+
+  it('should add and remove registry certificate entries', () => {
+    component.addNewFormArrayEntry('registryCas');
+    expect(component.form.get('registryCas')['controls'].length).toBe(2);
+    component.removeFormArrayEntry('registryCas', 1);
+    expect(component.form.get('registryCas')['controls'].length).toBe(1);
+    component.removeFormArrayEntry('registryCas', 0);
+    expect(component.form.get('registryCas')['controls'].length).toBe(1);
+  });
+});
