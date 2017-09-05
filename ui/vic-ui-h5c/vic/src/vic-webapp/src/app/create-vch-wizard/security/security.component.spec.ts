@@ -21,7 +21,7 @@ import {CreateVchWizardService} from '../create-vch-wizard.service';
 import {Observable} from 'rxjs/Observable';
 import {SecurityComponent} from './security.component';
 
-describe('StorageCapacityComponent', () => {
+describe('SecurityComponent', () => {
 
   let component: SecurityComponent;
   let fixture: ComponentFixture<SecurityComponent>;

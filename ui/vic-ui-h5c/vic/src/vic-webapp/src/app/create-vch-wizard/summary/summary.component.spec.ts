@@ -18,9 +18,12 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {ClarityModule} from 'clarity-angular';
 import {HttpModule} from '@angular/http';
 import {SummaryComponent} from './summary.component';
+import {TestScheduler} from 'rxjs/Rx';
+import {Observable} from 'rxjs/Observable';
 
-describe('StorageCapacityComponent', () => {
+describe('SummaryComponent', () => {
 
+  let scheduler: TestScheduler;
   let component: SummaryComponent;
   let fixture: ComponentFixture<SummaryComponent>;
 
@@ -38,8 +41,37 @@ describe('StorageCapacityComponent', () => {
   });
 
   beforeEach(() => {
+    scheduler = new TestScheduler((a, b) => expect(a).toEqual(b));
+    const originalTimer = Observable.timer;
+
+    spyOn(Observable, 'timer').and.callFake(function(initialDelay, dueTime) {
+      return originalTimer.call(this, initialDelay, dueTime, scheduler);
+    });
+
     fixture = TestBed.createComponent(SummaryComponent);
     component = fixture.componentInstance;
+    component.payload = {
+      storageCapacity: {
+        imageStore: 'datastore',
+        volumeStores: []
+      },
+      networks: {
+        containerNetworks: []
+      }
+    };
+    component.form.get('targetOS').setValue('windows');
+    component.onPageLoad();
+  });
+
+  it('should copy cli command to clipboard', () => {
+    component.form.get('targetOS').setValue('darwin');
+    component.copyCliCommandToClipboard();
+
+    scheduler.schedule(() => {
+      expect(component.copySucceeded).toBe(null);
+    }, 1500, null);
+
+    scheduler.flush();
   });
 
   it('should be created', () => {

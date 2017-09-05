@@ -21,7 +21,7 @@ import {CreateVchWizardService} from '../create-vch-wizard.service';
 import {Observable} from 'rxjs/Observable';
 import {NetworksComponent} from './networks.component';
 
-describe('StorageCapacityComponent', () => {
+describe('NetworksComponent', () => {
 
   let component: NetworksComponent;
   let fixture: ComponentFixture<NetworksComponent>;
