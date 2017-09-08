@@ -41,12 +41,14 @@ describe('SummaryComponent', () => {
   });
 
   beforeEach(() => {
+    // Set up TestScheduler to be used with Jasmine assertion
     scheduler = new TestScheduler((a, b) => expect(a).toEqual(b));
     const originalTimer = Observable.timer;
 
-    spyOn(Observable, 'timer').and.callFake(function(initialDelay, dueTime) {
-      return originalTimer.call(this, initialDelay, dueTime, scheduler);
-    });
+    // Monkey-patch Observable.timer to handle its async behavior using the TestScheduler
+    spyOn(Observable, 'timer').and.callFake(
+      (initialDelay, dueTime) => originalTimer.call(this, initialDelay, dueTime, scheduler)
+    );
 
     fixture = TestBed.createComponent(SummaryComponent);
     component = fixture.componentInstance;
@@ -67,10 +69,16 @@ describe('SummaryComponent', () => {
     component.form.get('targetOS').setValue('darwin');
     component.copyCliCommandToClipboard();
 
+    // copySucceeded is set to false or true here to show an error or success message respectively
+    expect(component.copySucceeded).not.toBe(null);
+
+    // Schedule a time lapse
     scheduler.schedule(() => {
+      // We expect it to return to null here to remove any error/success message
       expect(component.copySucceeded).toBe(null);
     }, 1500, null);
 
+    // Advance in time to run the expect test inside the scheduler
     scheduler.flush();
   });
 

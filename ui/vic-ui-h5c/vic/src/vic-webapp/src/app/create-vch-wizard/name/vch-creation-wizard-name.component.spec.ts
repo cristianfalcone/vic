@@ -41,8 +41,11 @@ describe('VchCreationWizardNameComponent', () => {
         {
           provide: CreateVchWizardService,
           useValue: {
+            // Mock of the two possible values the service could respond with,
+            // so we can test the validity of the form (for valid or invalid based on this mock).
             checkVchNameUniqueness(name) {
-              if (name === 'vm-container-host') {
+              // In test cases, use 'vm-container-host' to test for uniqueness.
+              if (name === InvalidVCHName) {
                 return Observable.of(false);
               } else {
                 return Observable.of(true);
@@ -62,6 +65,9 @@ describe('VchCreationWizardNameComponent', () => {
     component = fixture.componentInstance;
     component.onPageLoad();
     service = fixture.debugElement.injector.get(CreateVchWizardService);
+
+    // Using callThrough() here to actually call the method, not just spy it.
+    // That way we can return what the mock method is returning (true or false)
     spyOn(service, 'checkVchNameUniqueness').and.callThrough();
   });
 
@@ -84,6 +90,7 @@ describe('VchCreationWizardNameComponent', () => {
   });
 
   it('should have a invalid form after adding an invalid length for name',  () => {
+    // A name with more than 80 characters long will be considered invalid.
     component.form.get('name').setValue(ValidVCHName.repeat(10));
     expect(component.form.invalid).toBe(true);
   });
@@ -107,10 +114,13 @@ describe('VchCreationWizardNameComponent', () => {
   });
 
   it('should have a invalid form after adding an already defined name', () => {
+    // Using InvalidVCHName will make the mock return a false value.
     component.form.get('name').setValue(InvalidVCHName);
+    // We need to catch the returned error here because it is handled in the parent component.
     component.onCommit().catch((value) => {
       return Observable.of(value);
     }).subscribe(() => {
+      // And now we can test the form validity when an already defined name is entered.
       expect(component.form.invalid).toBe(true);
     })
   });

@@ -106,6 +106,7 @@ describe('SecurityComponent', () => {
     component.removeFormArrayEntry('tlsCas', 1);
     expect(component.form.get('tlsCas')['controls'].length).toBe(1);
     component.removeFormArrayEntry('tlsCas', 0);
+    // It should not remove the last one (only its contents) so the user can add na new entry.
     expect(component.form.get('tlsCas')['controls'].length).toBe(1);
   });
 
@@ -115,6 +116,7 @@ describe('SecurityComponent', () => {
     component.removeFormArrayEntry('registryCas', 1);
     expect(component.form.get('registryCas')['controls'].length).toBe(1);
     component.removeFormArrayEntry('registryCas', 0);
+    // It should not remove the last one (only its contents) so the user can add na new entry.
     expect(component.form.get('registryCas')['controls'].length).toBe(1);
   });
 });

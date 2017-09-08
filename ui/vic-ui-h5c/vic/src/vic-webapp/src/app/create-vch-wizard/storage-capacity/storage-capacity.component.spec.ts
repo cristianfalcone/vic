@@ -23,6 +23,7 @@ import {StorageCapacityComponent} from './storage-capacity.component';
 
 describe('StorageCapacityComponent', () => {
 
+  const datastoreName = 'datastore';
   let component: StorageCapacityComponent;
   let fixture: ComponentFixture<StorageCapacityComponent>;
   let service: CreateVchWizardService;
@@ -40,7 +41,7 @@ describe('StorageCapacityComponent', () => {
           useValue: {
             getDatastores() {
               return Observable.of([{
-                text: 'datastore'
+                text: datastoreName
               }]);
             }
           }
@@ -75,13 +76,13 @@ describe('StorageCapacityComponent', () => {
   });
 
   it('should end with an valid form on step commit after selecting a image store', () => {
-    component.form.get('imageStore').setValue('datastore');
+    component.form.get('imageStore').setValue(datastoreName);
     component.onCommit();
     expect(component.form.valid).toBe(true);
   });
 
   it('should validate advanced fields defaults values', () => {
-    component.form.get('imageStore').setValue('datastore');
+    component.form.get('imageStore').setValue(datastoreName);
     component.toggleAdvancedMode();
     expect(component.form.get('volumeStores').enabled).toBeTruthy();
     component.onCommit();
@@ -94,7 +95,7 @@ describe('StorageCapacityComponent', () => {
     component.toggleAdvancedMode();
     const controls = component.form.get('volumeStores')['controls'][0]['controls'];
 
-    controls['volDatastore'].setValue('datastore');
+    controls['volDatastore'].setValue(datastoreName);
     expect(controls['dockerVolName'].enabled).toBeTruthy();
     expect(controls['dockerVolName'].errors['required']).toBeTruthy();
 
@@ -115,26 +116,30 @@ describe('StorageCapacityComponent', () => {
   });
 
   it('should have folder fields that begin with a slash', () => {
-    component.form.get('imageStore').setValue('datastore');
-    component.form.get('fileFolder').setValue('folder');
+    const folderName = 'folder';
+    const expectedFolderName = '/folder';
+    component.form.get('imageStore').setValue(datastoreName);
+    component.form.get('fileFolder').setValue(folderName);
+
     component.toggleAdvancedMode();
+
     const controls = component.form.get('volumeStores')['controls'][0]['controls'];
-    controls['volDatastore'].setValue('datastore');
-    controls['volFileFolder'].setValue('folder');
+    controls['volDatastore'].setValue(datastoreName);
+    controls['volFileFolder'].setValue(folderName);
     controls['dockerVolName'].setValue('volume');
 
     component.onCommit().subscribe( r => {
-      expect(r.storageCapacity.fileFolder).toBe('/folder');
-      expect(r.storageCapacity.volumeStores[0].volFileFolder).toBe('/folder');
+      expect(r.storageCapacity.fileFolder).toBe(expectedFolderName);
+      expect(r.storageCapacity.volumeStores[0].volFileFolder).toBe(expectedFolderName);
     });
 
     // should not add an extra slash
-    component.form.get('fileFolder').setValue('/folder');
-    controls['volFileFolder'].setValue('/folder');
+    component.form.get('fileFolder').setValue(expectedFolderName);
+    controls['volFileFolder'].setValue(expectedFolderName);
 
     component.onCommit().subscribe( r => {
-      expect(r.storageCapacity.fileFolder).toBe('/folder');
-      expect(r.storageCapacity.volumeStores[0].volFileFolder).toBe('/folder');
+      expect(r.storageCapacity.fileFolder).toBe(expectedFolderName);
+      expect(r.storageCapacity.volumeStores[0].volFileFolder).toBe(expectedFolderName);
     });
   });
 });
