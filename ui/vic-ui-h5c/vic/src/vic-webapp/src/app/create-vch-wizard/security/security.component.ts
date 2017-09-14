@@ -26,6 +26,7 @@ import {
   ipPattern,
   whiteListRegistryPattern
 } from '../../shared/utils/validators';
+import { parsePEMFileTextContent } from '../../shared/utils/certificates';
 
 @Component({
   selector: 'vic-vch-creation-security',
@@ -284,7 +285,7 @@ export class SecurityComponent {
     const fr = new FileReader();
     const fileList: FileList = evt.target['files'];
     const filereaderOnloadFactory = (filename: string) => {
-      return () => {
+      return (event) => {
         let targetArray: any[];
         if (targetField === 'tlsCas') {
           targetArray = this.tlsCaContents;
@@ -292,16 +293,20 @@ export class SecurityComponent {
           targetArray = this.registryCaContents;
         }
 
+        const certificate = parsePEMFileTextContent(event.target.result);
+
         if (targetArray[index]) {
           // overwrite if value already exists at this index
           targetArray[index] = {
             name: filename,
-            content: fr.result
+            content: event.target.result,
+            expires: certificate.expires
           };
         } else {
           targetArray.push({
             name: filename,
-            content: fr.result
+            content: event.target.result,
+            expires: certificate.expires
           });
         }
       };
