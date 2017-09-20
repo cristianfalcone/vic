@@ -14,30 +14,24 @@
  limitations under the License.
 */
 
+import { fromBase64, stringToArrayBuffer } from 'pvutils';
 import { fromBER } from 'asn1js';
-import Certificate from 'pkijs/src/Certificate';
+import Certificate from 'pkijs/build/Certificate';
+import PrivateKeyInfo from 'pkijs/build/PrivateKeyInfo';
 
-interface CertificateInfo {
+export interface CertificateInfo {
   expires: Date
 }
 
-export function parsePEMFileTextContent(str: string): CertificateInfo {
+export function parseCertificatePEMFileContent(str: string): CertificateInfo {
 
-  // TODO: Handle errors
-
-  // Remove certificate headers
+  // Remove headers
   str = str.replace(/(-----(BEGIN|END) CERTIFICATE-----|\n)/g, '');
 
-  // Decode base-64 string
-  str = atob(str);
+  // Decode Base64 string, convert to an ArrayBuffer and parse raw data
+  const asn1 = fromBER(stringToArrayBuffer(fromBase64(str)));
 
-  // Convert to an ArrayBuffer
-  const arr = stringToArrayBuffer(str);
-
-  // Parse raw data
-  const asn1 = fromBER(arr);
-
-  // Create model
+  // Create Certificate model
   const certificate = new Certificate({ schema: asn1.result });
 
   return {
@@ -45,13 +39,16 @@ export function parsePEMFileTextContent(str: string): CertificateInfo {
   }
 }
 
-function stringToArrayBuffer(str: string): ArrayBuffer {
-  const buf = new ArrayBuffer(str.length);
-  const bufView = new Uint8Array(buf);
+export function parsePrivateKeyPEMFileContent(str: string): boolean {
 
-  for (let i = 0, strLen = str.length; i < strLen; i++) {
-    bufView[i] = str.charCodeAt(i);
-  }
+  // Remove headers
+  str = str.replace(/(-----(BEGIN|END) PRIVATE KEY-----|\n)/g, '');
 
-  return buf;
+  // Decode Base64 string, convert to an ArrayBuffer and parse raw data
+  const asn1 = fromBER(stringToArrayBuffer(fromBase64(str)));
+
+  // Create Private Key model
+  const privateKey = new PrivateKeyInfo({ schema: asn1.result });
+
+  return true;
 }

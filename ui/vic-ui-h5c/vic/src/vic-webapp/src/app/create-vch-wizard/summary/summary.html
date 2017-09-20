@@ -334,7 +334,7 @@
           Server certificate
         </clr-stack-label>
         <clr-stack-content>
-          {{ payload.security.tlsServerCert || '-' }}
+          {{ payload.security.tlsServerCert ? ('expires: ' + (payload.security.tlsServerCert.expires | date : 'mediumDate')) : '-' }}
         </clr-stack-content>
       </clr-stack-block>
       <!-- server private key -->
@@ -343,7 +343,7 @@
           Server private key
         </clr-stack-label>
         <clr-stack-content>
-          {{ payload.security.tlsServerKey || '-' }}
+          {{ payload.security.tlsServerKey ? (payload.security.tlsServerKey.name) : '-' }}
         </clr-stack-content>
       </clr-stack-block>
       <!-- tls verify -->
@@ -358,10 +358,10 @@
       <!-- client CAs -->
       <clr-stack-block *ngFor="let tlsCa of payload?.security?.tlsCa; let i = index">
         <clr-stack-label>
-          Client CA {{ i + 1 }}
+          Client certificate {{ i + 1 }}
         </clr-stack-label>
         <clr-stack-content>
-          {{ tlsCa.name }}
+          expires: {{ tlsCa.expires | date : 'mediumDate' }}
         </clr-stack-content>
       </clr-stack-block>
     </clr-stack-block>
@@ -386,10 +386,10 @@
     <!-- regsitry CAs -->
     <clr-stack-block *ngFor="let registryCa of payload?.security?.registryCa; let i = index">
       <clr-stack-label>
-        Registry CA {{ i + 1 }}
+        Registry certificate {{ i + 1 }}
       </clr-stack-label>
       <clr-stack-content>
-        {{ registryCa.name }}
+        expires: {{ registryCa.expires | date : 'mediumDate' }}
       </clr-stack-content>
     </clr-stack-block>
     <!-- ops user -->
