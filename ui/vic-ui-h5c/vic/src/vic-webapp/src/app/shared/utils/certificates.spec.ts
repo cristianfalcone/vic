@@ -71,7 +71,6 @@ BbNdSRpHPUXGX4jDxtQRRjs5
 
   it('should parse a valid certificate PEM file text content', () => {
     const certificate = parseCertificatePEMFileContent(certificateFixture);
-    console.log(certificate);
     expect(certificate).toEqual(jasmine.objectContaining({
       expires: new Date('Mon Dec 04 2017 07:21:46 GMT-0300 (-03)')
     }));
@@ -79,7 +78,6 @@ BbNdSRpHPUXGX4jDxtQRRjs5
 
   it('should parse a valid private key PEM file text content', () => {
     const privateKey = parsePrivateKeyPEMFileContent(privateKeyFixture);
-    console.log(privateKey);
     expect(privateKey).toBe(true);
   });
 });
