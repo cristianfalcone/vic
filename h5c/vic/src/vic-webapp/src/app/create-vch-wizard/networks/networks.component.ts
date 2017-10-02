@@ -18,7 +18,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/timer';
 import { CreateVchWizardService } from '../create-vch-wizard.service';
-import { supportedCharsPattern, ipPattern, numberPattern } from '../../shared/utils/validators';
+import { supportedCharsPattern, ipPattern, numberPattern, cidrPattern } from '../../shared/utils/validators';
 
 @Component({
   selector: 'vic-vch-creation-networks',
@@ -42,7 +42,7 @@ export class NetworksComponent implements OnInit {
       publicNetwork: ['', Validators.required],
       publicNetworkIp: [{ value: '', disabled: true }, [
         Validators.required,
-        Validators.pattern(ipPattern)
+        Validators.pattern(cidrPattern)
       ]],
       publicNetworkType: 'dhcp',
       publicNetworkGateway: [{ value: '', disabled: true }, [
@@ -50,10 +50,19 @@ export class NetworksComponent implements OnInit {
         Validators.pattern(ipPattern)
       ]],
       clientNetwork: '',
+      clientNetworkIp: [{ value: '', disabled: true }, [
+        Validators.required,
+        Validators.pattern(cidrPattern)
+      ]],
+      clientNetworkType: 'dhcp',
+      clientNetworkGateway: [{ value: '', disabled: true }, [
+        Validators.required,
+        Validators.pattern(ipPattern)
+      ]],
       managementNetwork: '',
       managementNetworkIp: [{ value: '', disabled: true }, [
         Validators.required,
-        Validators.pattern(ipPattern)
+        Validators.pattern(cidrPattern)
       ]],
       managementNetworkType: 'dhcp',
       managementNetworkGateway: [{ value: '', disabled: true }, [
@@ -130,9 +139,22 @@ export class NetworksComponent implements OnInit {
         if (v === 'dhcp') {
           this.form.get('publicNetworkIp').disable();
           this.form.get('publicNetworkGateway').disable();
+          this.form.get('dnsServer').disable();
         } else {
           this.form.get('publicNetworkIp').enable();
           this.form.get('publicNetworkGateway').enable();
+          this.form.get('dnsServer').enable();
+        }
+      });
+
+    this.form.get('clientNetworkType').valueChanges
+      .subscribe(v => {
+        if (v === 'dhcp') {
+          this.form.get('clientNetworkIp').disable();
+          this.form.get('clientNetworkGateway').disable();
+        } else {
+          this.form.get('clientNetworkIp').enable();
+          this.form.get('clientNetworkGateway').enable();
         }
       });
 
