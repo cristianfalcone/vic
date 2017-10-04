@@ -17,7 +17,7 @@
 import { fromBase64, stringToArrayBuffer } from 'pvutils';
 import { fromBER } from 'asn1js';
 import Certificate from 'pkijs/build/Certificate';
-import InternalPrivateKeyInfo from 'pkijs/src/PrivateKeyInfo';
+import InternalPrivateKeyInfo from 'pkijs/build/PrivateKeyInfo';
 
 export interface CertificateInfo {
   expires: Date

@@ -49,7 +49,7 @@
             </div>
             <div class="col-xs">
 
-              <div class="toggle-switch">
+              <div class="toggle-switch toggle-switch--no-label">
                 <input type="checkbox" id="use-tls" formControlName="useTls">
                 <label for="use-tls"></label>
               </div>
@@ -255,7 +255,7 @@
                 <div class="form-group mb-0 row">
                   <div class="col-xs">
 
-                    <div class="toggle-switch">
+                    <div class="toggle-switch toggle-switch--no-label">
                       <input type="checkbox" id="use-client-auth" formControlName="useClientAuth">
                       <label for="use-client-auth"></label>
                     </div>
@@ -576,25 +576,18 @@
               <input id="ops-user"
                      class="form-control"
                      type="text"
-                     placeholder="vSphere user that deploys VCH"
+                     placeholder="username@domain.local"
                      formControlName="opsUser">
 
             </div>
           </div>
           <div class="form-group row mb-2">
-            <div class="col-xs-3">
-
-              <label for="ops-user">
-                vSphere user credentials
-              </label>
-
-            </div>
             <div class="col-xs-5 offset-xs-3">
 
               <input id="ops-user-pass"
                      class="form-control"
                      type="password"
-                     placeholder="vSphere user that deploys VCH"
+                     placeholder="Password"
                      formControlName="opsUserPass">
 
             </div>
